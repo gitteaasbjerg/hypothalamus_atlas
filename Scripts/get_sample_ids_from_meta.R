@@ -30,6 +30,7 @@ for (s in studies){
 
 output_path <- y[['output']][['file_path']]
 print(paste("Writing sample indicies to YAML file at ", output_path))
+dir.create(dirpath(output_path), showWarnings = FALSE, recursive = TRUE)
 write_yaml(study_idx, output_path)
 print("")
 print("")
