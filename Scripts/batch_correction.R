@@ -28,7 +28,7 @@ for (i in 1:length(study_idx)){
 }
 
 retain_sample_idx <- Reduce(union, retain_sample_idx)
-retain_gene_idx <- Reduce(intersect, gene_idx)
+retain_gene_idx <- Reduce(union, gene_idx)
 
 data <- h5read(h5_path, internal_path, index=list(retain_gene_idx, retain_sample_idx))
 H5close()
