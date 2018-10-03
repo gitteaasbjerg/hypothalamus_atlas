@@ -36,5 +36,4 @@ for (i in 1:length(study_idx)){
 }
 print("")
 print("")
-dir.create(dirpath(output_path), showWarnings = FALSE, recursive = TRUE)
 write_yaml(drop_idx, output_path)

@@ -4,7 +4,6 @@ library("yaml")
 h5_path <- "~/Projects/rotation_Tune/Data/mouse_matrix.h5"
 internal_path <- "data/expression"
 output_path <- "~/Projects/rotation_Tune/Outputs/gene_idx.yaml"
-dir.create(dirpath(output_path), showWarnings = FALSE, recursive = TRUE)
 
 
 cmd_args = commandArgs(trailingOnly = TRUE)

@@ -44,6 +44,4 @@ batchid = match(series, unique(series))
 data_batchcorrected <- sva::ComBat(dat=data, batch=batchid, par.prior=TRUE, prior.plots=FALSE)
 rownames(data_batchcorrected) = gene_names
 colnames(data_batchcorrected) = gsm_accession
-
-dir.create(dirpath(output_path), showWarnings = FALSE, recursive = TRUE)
 write.csv(data_batchcorrected, output_path, quote=F)
