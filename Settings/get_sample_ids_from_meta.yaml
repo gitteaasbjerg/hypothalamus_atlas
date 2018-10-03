@@ -1,0 +1,15 @@
+input:
+  file_path: "~/Projects/rotation_Tune/Data/mouse_matrix.h5"
+  internal_path: "meta"
+output:
+  file_path: "~/Projects/rotation_Tune/Outputs/sample_idx_from_meta.yaml"
+studies:
+  -
+    Sample_series_id: GSE114960
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE79551
+    Sample_source_name_ch1: hypothalamus
+  -
+    Sample_series_id: GSE104709
+    Sample_source_name_ch1: Circumventricular Hypothalamus (CVH)
