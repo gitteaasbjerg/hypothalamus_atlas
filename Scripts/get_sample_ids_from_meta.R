@@ -18,10 +18,9 @@ study_idx <- list()
 for (s in studies){
   num_filters <- length(s)
   name_filters <- names(s)
-  value_filters <- as.vector(unlist(s))
   temp_idx_list <- list()
   for (i in 1:num_filters){
-    temp_idx_list[[name_filters[i]]] <- which(meta[[name_filters[i]]] == value_filters[i])
+    temp_idx_list[[name_filters[i]]] <- which(meta[[name_filters[i]]] %in% s[[i]])
   }
   reduced_idx <- Reduce(intersect, temp_idx_list)
   study_idx[[s[['Sample_series_id']]]] <- reduced_idx
