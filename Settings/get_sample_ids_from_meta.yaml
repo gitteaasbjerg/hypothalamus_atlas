@@ -13,3 +13,75 @@ studies:
   -
     Sample_series_id: GSE104709
     Sample_source_name_ch1: Circumventricular Hypothalamus (CVH)
+  -
+    Sample_series_id: GSE99412
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE70484
+    Sample_source_name_ch1: [Adult female hypothalamus, Adult male hypothalamus,
+                             Adult female arcuate nucleus, Adult Male and Female Parental ARN pooled]
+  -
+    Sample_series_id: GSE70732
+    Sample_source_name_ch1: Adult Hypothalamus tissue
+  -
+    Sample_series_id: GSE96700
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE95363
+    Sample_source_name_ch1: ['Female dexamethasone treatment, Hypothalamus',
+                             'Female ethanol vehicle treatment, Hypothalamus',
+                             'Male dexamethasone treatment, Hypothalamus',
+                             'Male ethanol vehicle treatment, Hypothalamus']
+  -
+    Sample_series_id: GSE68177
+    Sample_source_name_ch1: ['Hypothalamus, arcuate nucleus']
+  -
+    Sample_series_id: GSE104709
+    Sample_source_name_ch1: 'Circumventricular Hypothalamus (CVH)'
+  # -
+    # leave this alone for now, it has both zebra fish and mouse!
+    # 'GSE98519': ['Lef1-CKO, E14.5, Hypothalamus',
+    #             'Lef1-CKO, P22, Hypothalamus',
+    #             'Lef1-CON, E14.5, Hypothalamus',
+    #             'Lef1-CON, P22, Hypothalamus'],
+  -
+    Sample_series_id: GSE100599
+    Sample_source_name_ch1: hypothalamus
+  -
+    Sample_series_id: GSE98356
+    Sample_source_name_ch1: ['Hypothalamus_ad libitum (AL)',
+                             'Hypothalamus_ad libitum after diet restricted',
+                             'Hypothalamus_diet restricted']
+  -
+    Sample_series_id: GSE106210
+    Sample_source_name_ch1: 'Mediobasal hypothalamus'
+  -
+    Sample_series_id: 'GSE55800'
+    Sample_source_name_ch1: 'Midbrain and hypothalamus'
+  -
+    Sample_series_id: 'GSE98690'
+    Sample_source_name_ch1: 'Mouse Hypothalamus'
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
+  # -
+  #   Sample_series_id: 
+  #   Sample_source_name_ch1:
