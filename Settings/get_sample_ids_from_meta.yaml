@@ -57,27 +57,26 @@ studies:
   -
     Sample_series_id: 'GSE98690'
     Sample_source_name_ch1: 'Mouse Hypothalamus'
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
-  # -
-  #   Sample_series_id: 
-  #   Sample_source_name_ch1:
+  -
+    Sample_series_id: GSE65775Xx-xXGSE65776
+    Sample_source_name_ch1: 'Brain - Hypothalamus/Thalamus'
+  -
+    Sample_series_id: 'GSE80345Xx-xXGSE80346'
+    Sample_source_name_ch1: 'Hypothalamus'
+  -
+    Sample_series_id: GSE54651Xx-xXGSE54652
+    Sample_source_name_ch1: 'hypothalamus'
+  -
+    Sample_series_id: GSE96685Xx-xXGSE96686
+    Sample_source_name_ch1: ['Whole Hypothalamus at 2.5dpc, KO',
+                             'Whole Hypothalamus at 2.5dpc, WT']
+  -
+    Sample_series_id: GSE81206Xx-xXGSE81207
+    Sample_source_name_ch1: ['hypothalamus-8wks-Rai1-KO',
+                             'hypothalamus-8wks-WT']
+  -
+    Sample_series_id: GSE66870Xx-xXGSE66871
+    Sample_source_name_ch1: 'hypothalamus'
   # -
   #   Sample_series_id: 
   #   Sample_source_name_ch1:
