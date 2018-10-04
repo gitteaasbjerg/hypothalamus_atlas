@@ -38,12 +38,8 @@ studies:
   -
     Sample_series_id: GSE104709
     Sample_source_name_ch1: 'Circumventricular Hypothalamus (CVH)'
-  # -
-    # leave this alone for now, it has both zebra fish and mouse!
-    # 'GSE98519': ['Lef1-CKO, E14.5, Hypothalamus',
-    #             'Lef1-CKO, P22, Hypothalamus',
-    #             'Lef1-CON, E14.5, Hypothalamus',
-    #             'Lef1-CON, P22, Hypothalamus'],
+  -
+    Sample_series_id: GSE98519
   -
     Sample_series_id: GSE100599
     Sample_source_name_ch1: hypothalamus
