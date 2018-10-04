@@ -27,6 +27,9 @@ for (s in studies){
   print(paste("Study ", s[['Sample_series_id']], "has ", length(reduced_idx), " samples."))
 }
 
+all_sample_idx <- Reduce(union, study_idx)
+print(paste0("Found ", length(all_sample_idx), " in ", length(study_idx), " studies."))
+
 output_path <- y[['output']][['file_path']]
 print(paste("Writing sample indicies to YAML file at ", output_path))
 write_yaml(study_idx, output_path)
