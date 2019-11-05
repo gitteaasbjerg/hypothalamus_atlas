@@ -1,0 +1,79 @@
+input:
+  file_path: "~/Downloads/mouse_matrix.h5"
+  internal_path: "meta"
+output:
+  file_path: "~/Desktop/9th_semester/RNA-seq/hypothalamus_atlas/Outputs/sample_idx_from_meta.yaml"
+studies:
+  -
+    Sample_series_id: GSE114960
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE79551
+    Sample_source_name_ch1: hypothalamus
+  -
+    Sample_series_id: GSE104709
+    Sample_source_name_ch1: Circumventricular Hypothalamus (CVH)
+  -
+    Sample_series_id: GSE99412
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE70484
+    Sample_source_name_ch1: [Adult female hypothalamus, Adult male hypothalamus,
+                             Adult female arcuate nucleus, Adult Male and Female Parental ARN pooled]
+  -
+    Sample_series_id: GSE70732
+    Sample_source_name_ch1: Adult Hypothalamus tissue
+  -
+    Sample_series_id: GSE96700
+    Sample_source_name_ch1: Hypothalamus
+  -
+    Sample_series_id: GSE95363
+    Sample_source_name_ch1: ['Female dexamethasone treatment, Hypothalamus',
+                             'Female ethanol vehicle treatment, Hypothalamus',
+                             'Male dexamethasone treatment, Hypothalamus',
+                             'Male ethanol vehicle treatment, Hypothalamus']
+  -
+    Sample_series_id: GSE68177
+    Sample_source_name_ch1: ['Hypothalamus, arcuate nucleus']
+  -
+    Sample_series_id: GSE104709
+    Sample_source_name_ch1: 'Circumventricular Hypothalamus (CVH)'
+  -
+    Sample_series_id: GSE98519
+  -
+    Sample_series_id: GSE100599
+    Sample_source_name_ch1: hypothalamus
+  -
+    Sample_series_id: GSE98356
+    Sample_source_name_ch1: ['Hypothalamus_ad libitum (AL)',
+                             'Hypothalamus_ad libitum after diet restricted',
+                             'Hypothalamus_diet restricted']
+  -
+    Sample_series_id: GSE106210
+    Sample_source_name_ch1: 'Mediobasal hypothalamus'
+  -
+    Sample_series_id: 'GSE55800'
+    Sample_source_name_ch1: 'Midbrain and hypothalamus'
+  -
+    Sample_series_id: 'GSE98690'
+    Sample_source_name_ch1: 'Mouse Hypothalamus'
+  -
+    Sample_series_id: GSE65775Xx-xXGSE65776
+    Sample_source_name_ch1: 'Brain - Hypothalamus/Thalamus'
+  -
+    Sample_series_id: 'GSE80345Xx-xXGSE80346'
+    Sample_source_name_ch1: 'Hypothalamus'
+  -
+    Sample_series_id: GSE54651Xx-xXGSE54652
+    Sample_source_name_ch1: 'hypothalamus'
+  -
+    Sample_series_id: GSE96685Xx-xXGSE96686
+    Sample_source_name_ch1: ['Whole Hypothalamus at 2.5dpc, KO',
+                             'Whole Hypothalamus at 2.5dpc, WT']
+  -
+    Sample_series_id: GSE81206Xx-xXGSE81207
+    Sample_source_name_ch1: ['hypothalamus-8wks-Rai1-KO',
+                             'hypothalamus-8wks-WT']
+  -
+    Sample_series_id: GSE66870Xx-xXGSE66871
+    Sample_source_name_ch1: 'hypothalamus'
