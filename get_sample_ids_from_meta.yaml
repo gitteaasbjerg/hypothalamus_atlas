@@ -1,0 +1,25 @@
+input:
+  file_path: '/scratch/petar/mouse_matrix.h5'
+  internal_path_meta: 'meta'
+  internal_path_exp: 'data/expression'
+output:
+  data_path: '/projects/gitte/hypothalamus_atlas/Outputs/data.csv'
+  meta_path: '/projects/gitte/hypothalamus_atlas/Outputs/meta.csv'
+  output_path: '/projects/gitte/hypothalamus_atlas/Outputs'
+studies:
+  -
+    Sample_series_id: GSE79551
+    Sample_source_name_ch1: hypothalamus
+  -
+    Sample_series_id: GSE104709
+    Sample_source_name_ch1: Circumventricular Hypothalamus (CVH)
+  -
+    Sample_series_id: GSE80345Xx-xXGSE80346
+    Sample_source_name_ch1: 'Hypothalamus'
+batches: 
+    - 'Sample_platform_id'
+    - 'Sample_submission_date' 
+    - 'Sample_last_update_date'
+covariates:
+    - 'total_reads'
+    - 'reads_aligned'
