@@ -9,6 +9,6 @@ if [ ! -d "Outputs" ]; then
 mkdir -p Outputs
 fi
 Rscript 1_extraction.R
-Rscript 2_normalisation.R
+Rscript 2.2_variance_stabilization.R
 Rscript 3_outlier_removal.R
 Rscript 4_batch_correction.R
