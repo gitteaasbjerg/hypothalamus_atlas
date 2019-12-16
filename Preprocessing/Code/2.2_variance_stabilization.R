@@ -3,7 +3,7 @@ library("yaml")
 library('DESeq2')
 yaml_path <- '/projects/gitte/hypothalamus_atlas/get_sample_ids_from_meta.yaml'
 y <- read_yaml(yaml_path)
-cat('------------------------------------------------\n            Normalizing studie(s)\n------------------------------------------------\n')
+cat('------------------------------------------------\n            Variance stabilization\n------------------------------------------------\n')
 
 make_expr <- function(vsd, meta){
   expr<-t(assay(vsd))
@@ -18,7 +18,7 @@ meta = read.csv(y[['output']][['meta_path']],row.names = 3)
 
 batches <- y[['batches']]
 for (i in 1:length(batches)){
-  meta2[[batches[i]]] <- factor(meta2[[batches[1]]])
+  meta[[batches[i]]] <- factor(meta[[batches[1]]])
 }
 
 all_data <- NULL
