@@ -6,7 +6,6 @@ yaml_path <- '/projects/gitte/hypothalamus_atlas/get_sample_ids_from_meta.yaml'
 y <- read_yaml(yaml_path)
 cat('------------------------------------------------\n  Removing batch effects from expression data \n------------------------------------------------\n')
 
-options(warn=-1) 
 data = read.csv(y[['output']][['data_path']],row.names = 1, header = TRUE)
 meta = read.csv(y[['output']][['meta_path']],row.names = 1, header = TRUE)
 
@@ -25,11 +24,11 @@ for (i in 1:length(studies)){
   sample_data <- data[,which(meta$Sample_series_id==study)]
   
   #Extract columns & rows relevant for batch correction
-  sample_covariets <- sample_meta[,covariets]
-  sample_batches <- sample_meta[,batches]
+  sample_covariets <- sample_meta[covariets]
+  sample_batches <- sample_meta[batches]
   
   #Remove batches with only one distinct value
-  sample_batches <- sample_batches[, sapply(sample_batches, function(col) length(unique(col))) > 1]
+  sample_batches <- sample_batches[sapply(sample_batches, function(col) length(unique(col))) > 1]
   
   
   batch <- list()
@@ -42,11 +41,9 @@ for (i in 1:length(studies)){
       bb            <- droplevels(sample_batches[[b]])
       contrasts(bb) <- contr.sum(levels(bb))
       batch[[b]]    <- bb
-    }
-    
-    #Create batch input-string for model matrix
-    for (i in 1:length(sample_batches)){
-      model_matrix_b_input <- paste0(model_matrix_b_input,'batch[[',i,']]+')
+      
+      #Create batch input-string for model matrix
+      model_matrix_b_input <- paste0(model_matrix_b_input,'batch[[',b,']]+')
     }
   }
   
@@ -73,9 +70,7 @@ for (i in 1:length(studies)){
     print(paste0("Batch correction of ", length(sample_batches)," batches and ", length(sample_covariets), ' covariates has been successfully conducted on study ',study))
     
   }
-  
   all_data <- cbind(all_data, data_corrected)
-
 }
 
 write.csv(as.data.frame(all_data),y[['output']][['data_path']], quote=F)
