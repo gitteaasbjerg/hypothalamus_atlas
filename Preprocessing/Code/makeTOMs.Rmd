@@ -1,0 +1,340 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library("DESeq2")
+library(ggfortify)
+library(cowplot)
+library(GOsummaries)
+library(dplyr)
+library(plyr)
+library(pryr)
+library(WGCNA)
+library('sva')
+library('limma')
+library("ggdendro")
+library("dendextend")
+library("yaml")
+```
+
+```{r}
+yaml_path <- '/projects/gitte/hypothalamus_atlas/get_sample_ids_from_meta.yaml'
+
+#cmd_args = commandArgs(trailingOnly = TRUE)
+#yaml_path <- cmd_args[1]
+y<-read_yaml(yaml_path)
+#filter_area <- y[["filter_area"]]
+#exclude_samples <- y[["exclude_samples"]]
+#print(paste0("Filte area: ", filter_area))
+#print(paste0("Excluding samples: ", exclude_samples))
+```
+
+
+```{r}
+wgcna_threads <- 8
+enableWGCNAThreads(wgcna_threads)
+```
+
+```{r}
+options(stringsAsFactors = TRUE)
+```
+
+```{r}
+#genemat <- read.csv('/data/petar/bulk_demultiplex/brainarea2/merged_deseq2/merged_counts.csv',
+#                    row.names = 1, header=TRUE, quote = "")
+data = read.csv(y[['output']][['data_path']],row.names = 1, header = TRUE)
+meta = read.csv(y[['output']][['meta_path']],row.names = 3, header = TRUE)
+```
+
+
+```{r}
+batches <- y[['batches']]
+for (i in 1:length(batches)){
+  meta[[batches[i]]] <- factor(meta[[batches[1]]])
+}
+
+#col_data <- read.csv('/projects/petar/brainarea/bulk/meta/meta2.csv', row.names = 1)
+#col_data$ID1 <- factor(col_data$ID1)
+#col_data$ID2 <- factor(col_data$ID2)
+#col_data$Diet <- factor(col_data$Diet)
+#col_data$Area <- factor(col_data$Area)
+#col_data$Seq_batch <- factor(col_data$Seq_batch)
+#meta <- col_data
+#meta$Diet <- relevel(meta$Diet, ref = "chow")
+#meta$diet<-as.factor(meta$Diet)
+```
+
+```{r}
+# !!! decide on structure that matches our project 
+# and is dependent on yaml file
+# and cleanup unnecessary folders from here
+outdirs = list()
+outdirs$base <- y[['output']][['output_path']]
+outdirs$plots <- paste0(outdirs$base, 'plots', '/', collapse = '/')
+outdirs$pca <- paste0(outdirs$plots, 'pca', '/', collapse = '/')
+#outdirs$dendro <- paste0(outdirs$plots, 'dendro', '/', collapse = '/')
+#outdirs$scale <- paste0(outdirs$plots, 'scale', '/', collapse = '/')
+#outdirs$module_corr <- paste0(outdirs$plots, 'module_corr', '/', collapse = '/')
+#outdirs$modules <- paste0(outdirs$base, 'modules', '/', collapse = '/')
+#outdirs$gprof <- paste0(outdirs$base, 'gprofiler', '/', collapse = '/')
+#outdirs$summaries <- paste0(outdirs$base, 'summaries', '/', collapse = '/')
+#outdirs$objects <- paste0('/projects/petar/brainarea/bulk2/wgcna/objects/', filter_area, '/')
+lapply(outdirs, dir.create, recursive=T, showWarnings = F)
+```
+
+```{r}
+# !!! get rid of sample filtering at this stage; we've already dropped unwanted samples
+#meta<-meta[meta$Area==filter_area,]
+#samples_f <- rownames(meta)
+#samples_f <- setdiff(samples_f, exclude_samples) # this sample looks weird on pca
+#samples_f <- intersect(samples_f, colnames(genemat))
+#genemat_f <- genemat[, samples_f]
+#meta <- meta[samples_f,]
+#dds <- DESeqDataSetFromMatrix(as.matrix(data), colData = meta, design = ~1)
+#keep <- rowSums(counts(dds) >= 10) > 4
+#dds <- dds[keep,]
+#dds<-DESeq(dds)
+```
+
+```{r}
+# !!! refactor code to get rid of this grab_plot
+# use library(plyr) to store code chunks to variables as follows
+#
+# tree_cut %<a-%{
+#   plot(METree, main = "Clustering of module eigengenes",xlab = "", sub = "")
+#   # Plot the cut line into the dendrogram
+#   abline(h=MEDissThres, col = "red")
+# }
+#
+# running tree_cut will produce the plot
+# to save it use it in save_plot
+#
+save_plot <- function(plot_pryr, plot_path){
+   png(filename = plot_path)
+   plot_pryr
+   dev.off()
+   }
+grab_plot <- function(some_plotter){
+  pdf(NULL)
+  dev.control(displaylist="enable")
+  some_plotter
+  dat_plot <- recordPlot()
+  invisible(dev.off())
+  dat_plot
+}
+```
+
+
+```{r}
+# !!! get rid of this
+# no batch/variable to visualize
+plot_2var_PCA <- function(pcaData, color_variable, shape_variable){
+  percentVar <- round(100 * attr(pcaData, "percentVar"))
+  g <- ggplot(pcaData, aes(PC1, PC2, color=get(color_variable), shape=get(shape_variable))) +
+    geom_point(size=3) +
+    xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+    ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+    coord_fixed()
+  g$labels$colour = color_variable
+  g$labels$shape = shape_variable
+  g
+}
+```
+
+
+```{r}
+# !!! get rid of this
+plot_dendro <- function(datExpr, color_variable, meta){
+  hc = hclust(dist(datExpr), method = "average")
+  dend <- as.dendrogram(hc, rotate = TRUE)
+  par(mar=c(5,2,2,10))
+  plot(dend, horiz=TRUE)
+  the_bars <- ifelse(meta[[color_variable]][hc$order] == 1, "white", "red")
+  colored_bars(colors = the_bars,
+               dend = dend,
+               sort_by_labels_order = FALSE,
+               horiz = TRUE,
+               rowLabels = color_variable)
+}
+```
+
+
+
+```{r}
+# !!! keep this and use it
+# it makes the scale independence plot and mean connectivity plot
+# let's see them for each TOM
+plot_scale_independence <- function(sft){
+  cex1=0.9
+  powers = c(c(1:10), seq(from = 12, to=40, by=2))
+
+  #dev.control(displaylist="enable")
+  sft_thr <- -sign(sft$fitIndices[,3])*sft$fitIndices[,2]
+  sft_thr_colors <- rep('black', length(sft$fitIndices$Power))
+  softPower <- sft$powerEstimate
+  sft_thr_colors[which(powers == softPower)] <- 'red'
+  pp <- plot(sft$fitIndices[,1], sft_thr,
+             xlab="Soft Threshold (power)",
+             ylab="Scale Free Topology Model Fit, signed R^2",
+             type="n",
+             main = paste("Scale independence"))
+  tt <- text(sft$fitIndices[,1], sft_thr,
+             labels=powers,
+             cex=cex1,
+             col=sft_thr_colors)
+  abl <- abline(h=0.80,col="red")
+}
+
+plot_mean_connectivity <- function(sft){
+  powers = c(c(1:10), seq(from = 12, to=40, by=2))
+  cex1=0.9
+  sft_thr <- -sign(sft$fitIndices[,3])*sft$fitIndices[,2]
+  sft_thr_colors <- rep('black', length(sft$fitIndices$Power))
+  softPower <- sft$powerEstimate
+  sft_thr_colors[which(powers == softPower)] <- 'red'
+  plot(sft$fitIndices[,1], sft$fitIndices[,5],xlab="Soft Threshold (power)",ylab="Mean Connectivity",
+       type="n",main = paste("Mean connectivity"))
+  text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col=sft_thr_colors)
+}
+
+# !!! this function returns a list with 3 named entities
+# power_estimate is the pickSoftThreshold result
+# remember to refactor grab_plot usage
+determine_scale <- function(datExpr, color_variable, meta){
+  powers = c(c(1:10), seq(from = 12, to=40, by=2))
+  sft=pickSoftThreshold(datExpr,dataIsExpr = TRUE, powerVector = powers, corOptions = list(use = 'p'),
+                        corFnc = "bicor", networkType = "signed hybrid")
+  scale_independence_plot %<a-% plot_scale_independence(sft)
+  mean_connectivity_plot %<a-% plot_mean_connectivity(sft)
+  scale_obj <- list(power_estimate = sft$powerEstimate,
+                    scale_independence_plot = scale_independence_plot,
+                    mean_connectivity_plot = mean_connectivity_plot)
+  scale_obj
+}
+```
+
+```{r}
+# !!! dont need this
+make_expr <- function(vsd, meta){
+  # !!! do not transpose
+  expr<-t(assay(vsd))
+  expr<-expr[(match(rownames(meta), rownames(expr))),]
+  datExpr<-as.matrix(expr)
+  datExpr
+}
+```
+
+```{r}
+# !!! get rid of this and switch it with the supplied save_plot
+save_recorded_plot <- function(recorded_plot, plot_path){
+  png(plot_path,
+    width=7, height=5, family="Comic Sans",
+    bg="white", units="in", res=300, type="cairo")
+  replayPlot(recorded_plot)
+  dev.off()
+}
+```
+
+
+```{r}
+# !!! run this without vst (alread done)
+vsd <- as.matrix(data)
+# !!! we don't have batches or conditions (or don't care at this stage)
+# !!! get rid of them
+color_variable <- "Sample_series_id"
+#shape_variable <- "Diet"
+#pcaData <- plotPCA(vsd,
+                   #intgroup=c(color_variable, shape_variable),
+                   #returnData=TRUE)
+#plot_path <- paste0(outdirs$pca, 'pca_uncorrected.png')
+#data_path <- paste0(outdirs$pca, 'pca_uncorrected.csv')
+#plot_2var_PCA(pcaData, color_variable, shape_variable)
+#ggsave(plot_path)
+#write.csv(pcaData, data_path, quote = TRUE, row.names = TRUE)
+# !!! this is where the data.csv (preprocessed) is entering
+# and likely doesn't need to be transposed as done in make_expr
+datExpr <- as.matrix(data) #make_expr(vsd, meta)
+#dendro <- grab_plot(plot_dendro(datExpr, meta))
+#plot_path <- paste0(outdirs$dendro, 'uncorrected_batch.png')
+#save_recorded_plot(dendro, plot_path)
+#replayPlot(dendro)
+
+# !!! no need to batch correct again, remove
+#assay(vsd) <- removeBatchEffect(assay(vsd), batch=dds$Seq_batch)
+# !!! no need to plot
+#pcaData <- plotPCA(vsd,
+                   #intgroup=c(color_variable, shape_variable),
+                   #returnData=TRUE)
+#plot_path <- paste0(outdirs$pca, 'pca_corrected.png')
+#data_path <- paste0(outdirs$pca, 'pca_corrected.csv')
+#plot_2var_PCA(pcaData, color_variable, shape_variable)
+#ggsave(plot_path)
+#write.csv(pcaData, data_path, quote = TRUE, row.names = TRUE)
+#datExpr <- make_expr(vsd, meta)
+#dendro <- grab_plot(plot_dendro(datExpr, color_variable, meta))
+#plot_path <- paste0(outdirs$dendro, 'corrected_batch.png')
+
+
+#save_recorded_plot(dendro, plot_path)
+#replayPlot(dendro)
+```
+
+
+```{r}
+# !!! remove. we don't want to end up with irregular sized datasets
+gsg = goodSamplesGenes(datExpr, verbose = 3);
+gsg$allOK
+
+if (!gsg$allOK)
+{
+# Optionally, print the gene and sample names that were removed:
+if (sum(!gsg$goodGenes)>0)
+printFlush(paste("Removing genes:", paste(names(datExpr)[!gsg$goodGenes], collapse = ", ")))
+datExpr = datExpr[gsg$goodSamples, gsg$goodGenes]
+}
+```
+
+
+```{r}
+ds <- determine_scale(datExpr, color_variable, meta)
+softPower <- ds$power_estimate
+plot_path <- paste0(outdirs$scale, 'scale_independence.png')
+save_recorded_plot(ds$scale_independence_plot, plot_path)
+replayPlot(ds$scale_independence_plot)
+plot_path <- paste0(outdirs$scale, 'mean_connectivity.png')
+save_recorded_plot(ds$mean_connectivity_plot, plot_path)
+replayPlot(ds$mean_connectivity_plot)
+```
+
+
+```{r}
+make_TOM <- function(datExpr, softPower, wgcna_threads){
+  SubGeneNames<-colnames(datExpr)
+  adj= adjacency(datExpr, type = "signed", power = softPower, corFnc = "bicor")
+  diag(adj)<-0
+  TOM=TOMsimilarityFromExpr(datExpr,
+                            networkType = "signed",
+                            TOMType = "signed",
+                            power = softPower,
+                            corType = "bicor",
+                            maxPOutliers = 0.05,
+                            nThreads=wgcna_threads)
+  colnames(TOM) = rownames(TOM) = SubGeneNames
+  TOM
+}
+```
+
+
+```{r}
+TOM <- make_TOM(datExpr, softPower, wgcna_threads)
+file_path <- paste0(outdirs$objects, 'TOM.rds.gz')
+saveRDS(TOM, file = file_path, compress = "gzip")
+file_path <- paste0(outdirs$objects, 'meta.rds.gz')
+saveRDS(meta, file = file_path, compress = "gzip")
+file_path <- paste0(outdirs$objects, 'datExpr.rds.gz')
+saveRDS(datExpr, file = file_path, compress = "gzip")
+```
+
