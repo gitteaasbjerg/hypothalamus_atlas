@@ -3,13 +3,13 @@ library("yaml")
 library('DESeq2')
 yaml_path <- '/projects/gitte/hypothalamus_atlas/get_sample_ids_from_meta.yaml'
 y <- read_yaml(yaml_path)
-cat('------------------------------------------------\n            Normalizing studie(s)\n------------------------------------------------\n')
+cat('------------------------------------------------\n            Variance stabilization\n------------------------------------------------\n')
 
 make_expr <- function(vsd, meta){
   expr<-t(assay(vsd))
   expr<-expr[(match(rownames(meta), rownames(expr))),]
   datExpr<-as.matrix(expr)
-  datExpr
+  datExpr<- t(datExpr)
 }
 
 data = read.csv(y[['output']][['data_path']],row.names = 1, header = TRUE)
@@ -18,7 +18,7 @@ meta = read.csv(y[['output']][['meta_path']],row.names = 3)
 
 batches <- y[['batches']]
 for (i in 1:length(batches)){
-  meta2[[batches[i]]] <- factor(meta2[[batches[1]]])
+  meta[[batches[i]]] <- factor(meta[[batches[1]]])
 }
 
 all_data <- NULL
@@ -33,7 +33,7 @@ for (i in 1:length(studies)){
   vsd <- vst(dds, blind=TRUE)
   datExpr <- make_expr(vsd, sample_meta)
   
-  all_data <- rbind(all_data, datExpr)
+  all_data <- cbind(all_data, datExpr)
   print(paste0('Successfully stablilized variation in ',i,' out of ', length(studies), ' studies'))
 }
 
