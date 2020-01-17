@@ -7,7 +7,7 @@ cat('------------------------------------------------\n            Normalizing s
 
 
 data = read.csv(y[['output']][['data_path']],row.names = 1, header = TRUE)
-meta = read.csv(y[['output']][['meta_path']],row.names = 1, header = TRUE)
+meta = read.csv(y[['output']][['meta_path']],row.names = 3, header = TRUE)
 
 
 all_data <- NULL
